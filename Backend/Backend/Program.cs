@@ -13,6 +13,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Backend.Repositories.Interfaces;
+using Backend.Repositories;
 
 namespace Backend
 {
@@ -30,7 +32,7 @@ namespace Backend
 
             //CREDENTIALS JSON config
             builder.Configuration.AddJsonFile("credentials.json", optional: false, reloadOnChange: true);
-            builder.Services.Configure<EmailSettingsDto>(builder.Configuration.GetSection("MailSettings"));
+            builder.Services.Configure<EmailSettingsDto>(builder.Configuration.GetSection("EmailSettingsDto"));
 
             //GOOGLE CREDENTIALS
             builder.Services.Configure<GoogleCredentials>(builder.Configuration.GetSection("GoogleCredentials"));
@@ -62,6 +64,11 @@ namespace Backend
 
             //ADD SERVICES
             builder.Services.AddScoped<ITokenCreationService, JwtService>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<ISubscribtionService, SubscribeService>();
+            builder.Services.AddScoped<IArticleService, ArticleService>();
+            builder.Services.AddScoped<IArticleRepository, ArticleRepository>();        
+            builder.Services.AddTransient<IEmailService, EmailService>();
 
             //JWT
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -116,9 +123,9 @@ namespace Backend
             //CLOUDINARY
             builder.Services.AddSingleton(s =>
             new Cloudinary(new Account(
-                builder.Configuration.GetValue<string>("CloudinaryConfig:Cloud"),
-                builder.Configuration.GetValue<string>("CloudinaryConfig:ApiKey"),
-                builder.Configuration.GetValue<string>("CloudinaryConfig:ApiSecret"))));
+                builder.Configuration.GetValue<string>("CloudinaryConfig:cloud_name"),
+                builder.Configuration.GetValue<string>("CloudinaryConfig:api_key"),
+                builder.Configuration.GetValue<string>("CloudinaryConfig:api_secret"))));
 
             //CORS
             builder.Services.AddCors(options => options.AddDefaultPolicy(

@@ -73,7 +73,7 @@ namespace Backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Articles");
+                    b.ToTable("Articles", (string)null);
                 });
 
             modelBuilder.Entity("Backend.Models.ArticleSection", b =>
@@ -104,7 +104,7 @@ namespace Backend.Migrations
 
                     b.HasIndex("ArticleId");
 
-                    b.ToTable("ArticleSections");
+                    b.ToTable("ArticleSections", (string)null);
                 });
 
             modelBuilder.Entity("Backend.Models.Comment", b =>
@@ -145,7 +145,7 @@ namespace Backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("Backend.Models.NewsletterSubscription", b =>
@@ -175,7 +175,7 @@ namespace Backend.Migrations
                         .IsUnique()
                         .HasFilter("[UserId] IS NOT NULL");
 
-                    b.ToTable("NewsletterSubscriptions");
+                    b.ToTable("NewsletterSubscriptions", (string)null);
                 });
 
             modelBuilder.Entity("Backend.Models.User", b =>
