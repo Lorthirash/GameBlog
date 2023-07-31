@@ -22,13 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Database\" />
-    <Folder Include="Extensions\" />
-    <Folder Include="Models\EmailSettings\" />
     <Folder Include="Models\DTOs\" />
-    <Folder Include="Models\Options\" />
     <Folder Include="Repositories\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>
