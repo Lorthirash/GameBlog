@@ -4,6 +4,8 @@ using Backend.Models;
 using Backend.Models.EmailSettings;
 using Backend.Models.GoogleSettings;
 using Backend.Models.Options;
+using Backend.Services.Interfaces;
+using Backend.Services;
 using CloudinaryDotNet;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -57,6 +59,10 @@ namespace Backend
             //PASSWORD HASH SETTING
             builder.Services.Configure<PasswordHasherOptions>(opt => opt.IterationCount = 210_000);
 
+
+            //ADD SERVICES
+            builder.Services.AddScoped<ITokenCreationService, JwtService>();
+
             //JWT
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
@@ -74,8 +80,8 @@ namespace Backend
                     });
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
+            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
             //SWAGGER
             builder.Services.AddSwaggerGen(options =>
