@@ -69,6 +69,8 @@ namespace Backend
             builder.Services.AddScoped<IArticleService, ArticleService>();
             builder.Services.AddScoped<IArticleRepository, ArticleRepository>();        
             builder.Services.AddTransient<IEmailService, EmailService>();
+            builder.Services.AddScoped<ICommentService, CommentService>();
+            builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 
             //JWT
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
