@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Services
 {
-    public class SubscribeService : ISubscribtionService
+    public class SubscribtionService : ISubscribtionService
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public SubscribeService(ApplicationDbContext context)
+        public SubscribtionService(ApplicationDbContext context)
         {
             _dbContext = context;
         }
