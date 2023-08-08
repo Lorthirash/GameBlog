@@ -1,7 +1,6 @@
 ﻿using Backend.Models.EmailSettings;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Org.BouncyCastle.Asn1.Pkcs;
 
 namespace Backend.Controllers
 {

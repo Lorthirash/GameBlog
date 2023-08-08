@@ -1,24 +1,23 @@
 ﻿
 
 
+using Backend.Extensions;
+using Backend.Models;
 using Backend.Models.Cloudinary;
+using Backend.Models.DTOs;
 using Backend.Models.EmailSettings;
+using Backend.Models.GoogleSettings;
 using Backend.Models.Jwt;
 using Backend.Models.Options;
-using Backend.Models;
 using Backend.Services.Interfaces;
-using CloudinaryDotNet;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
-using Backend.Models.GoogleSettings;
-using Microsoft.EntityFrameworkCore;
-using Backend.Models.DTOs;
-using Backend.Extensions;
 
 namespace Backend.Controllers
 {

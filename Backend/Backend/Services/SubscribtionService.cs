@@ -1,63 +1,38 @@
-﻿using Backend.Models.EmailSettings;
-using Backend.Models;
+﻿using Backend.Models;
+using Backend.Models.EmailSettings;
+using Backend.Repositories.Interfaces;
 using Backend.Services.Interfaces;
-using Backend.Database;
-using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Services
 {
     public class SubscribtionService : ISubscribtionService
     {
-        private readonly ApplicationDbContext _dbContext;
+        
+        private readonly ISubscriptionRepository _subscriptionRepository;
 
-        public SubscribtionService(ApplicationDbContext context)
+        public SubscribtionService(ISubscriptionRepository subscriptionRepository)
         {
-            _dbContext = context;
-        }
+           
+            _subscriptionRepository = subscriptionRepository;
+        }     
 
         public async Task<List<EmailAddresses>> AddNotUserSubscibersAsync(List<EmailAddresses> addresses)
         {
-            List<NewsletterSubscription> subscribers = await _dbContext.NewsletterSubscriptions
-                            .Where(subscriber => subscriber.UserId == null)
-                            .Select(subscriber => subscriber)
-                            .ToListAsync();
-
-            List<EmailAddresses> addresslist = addresses;
-            foreach (var subscriber in subscribers)
-            {
-                string[] name = subscriber.Email.Split('@');
-                string userName = name[0];
-                addresslist.Add(new EmailAddresses
-                {
-                    EmailToId = subscriber.Email,
-                    EmailToName = userName
-                });
-            }
-            return addresslist;
+            List<EmailAddresses> addressList = await _subscriptionRepository.GetNotUserSubscribersAsync();
+            // Műveletek a listával
+            return addressList;
         }
 
         public async Task SubscribeEmailToNewsletterAsync(string email)
         {
-            var subscription = new NewsletterSubscription()
-            {
-                Email = email,
-                UserId = null
-            };
-
-            await _dbContext.NewsletterSubscriptions.AddAsync(subscription);
-            await _dbContext.SaveChangesAsync();
+            await _subscriptionRepository.SubscribeEmailToNewsletterAsync(email);
+            await _subscriptionRepository.SaveChangesAsync();
         }
 
         public async Task SubscribeUserToNewsletterAsync(User newUser)
         {
-            var subscription = new NewsletterSubscription()
-            {
-                Email = newUser.Email!,
-                UserId = newUser.Id
-            };
-
-            await _dbContext.NewsletterSubscriptions.AddAsync(subscription);
-            await _dbContext.SaveChangesAsync();
+            await _subscriptionRepository.SubscribeUserToNewsletterAsync(newUser);
+            await _subscriptionRepository.SaveChangesAsync();
         }
     }
 }
