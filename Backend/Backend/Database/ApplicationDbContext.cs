@@ -14,6 +14,7 @@ namespace Backend.Database
         public DbSet<Comment> Comments { get; set; }
         public DbSet<NewsletterSubscription> NewsletterSubscriptions { get; set; }
         public DbSet<ArticleSection> ArticleSections { get; set; }
+        public DbSet<ArticleImage> ArticleImages { get; set; }
        
     }
 }

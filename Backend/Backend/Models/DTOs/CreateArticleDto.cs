@@ -13,6 +13,6 @@ namespace Backend.Models.DTOs
         public string Description { get; set; } = string.Empty;
         [Required(ErrorMessage = "Region is required")]   
         public string? Country { get; set; }
-        public IFormFile? Image { get; set; }
+        public List<IFormFile>? Images { get; set; }
     }
 }

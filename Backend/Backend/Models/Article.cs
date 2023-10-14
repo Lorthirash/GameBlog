@@ -11,8 +11,7 @@
         public string Text { get; set; } = string.Empty;
         public string? Category { get; set; }
 
-        public string Description { get; set; } = string.Empty;
-        public string ImageUrl { get; set; }
+        public string Description { get; set; } = string.Empty;       
       
         public string? Country { get; set; }
 
@@ -22,6 +21,8 @@
         public bool IsDeleted { get; set; } = false;
 
         public List<Comment> Comments { get; set; } = new();
+
+        public List<ArticleImage> ArticleImages { get; set; } = new();
         //public List<Photo> Images { get; set; } = new();
 
 

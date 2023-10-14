@@ -163,7 +163,7 @@ namespace Backend
             {
                 await context.Database.MigrateAsync();
             }
-
+            //ROLES
             using (var scope = app.Services.CreateScope())
             {
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();

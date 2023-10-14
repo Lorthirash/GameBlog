@@ -22,32 +22,34 @@ namespace Backend.Services
 
         public async Task<Article> CreateArticleAsync(CreateArticleDto createArticleDto, string currentUserId)
         {
-            string imageUrl;
-            if (createArticleDto.Image != null)
+            List<string> imageUrls = new List<string>();
+
+            if (createArticleDto.Images != null && createArticleDto.Images.Any())
             {
-                var uploadParams = new ImageUploadParams
+                foreach (var imageFile in createArticleDto.Images)
                 {
-                    File = new FileDescription(createArticleDto.Image?.Name, createArticleDto.Image?.OpenReadStream()),
-                    PublicId = Guid.NewGuid().ToString(),
-                    Transformation = new Transformation().Width(1920).Height(1080).Gravity("auto").Crop("fill").Chain()
-                    .Width("auto").Dpr("auto").Crop("scale"),
-                    //Transformation.DefaultIsResponsive = true,
-                    // az a folder, ahova Cloudinary-n rakja a képet
-                    Folder = "Trawell"
-                };
+                    var uploadParams = new ImageUploadParams
+                    {
+                        File = new FileDescription(imageFile.Name, imageFile.OpenReadStream()),
+                        PublicId = Guid.NewGuid().ToString(),
+                        Transformation = new Transformation().Width(1920).Height(1080).Gravity("auto").Crop("fill").Chain()
+                            .Width("auto").Dpr("auto").Crop("scale"),
+                        Folder = "Trawell"
+                    };
 
-                var uploadResult = await _cloudinary.UploadAsync(uploadParams);
-
-                //var uploadResult = await _cloudinary.UploadAsync(uploadParams);
-
-                imageUrl = uploadResult.SecureUrl.ToString();
-
+                    var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+                    imageUrls.Add(uploadResult.SecureUrl.ToString());
+                }
             }
             else
             {
-                imageUrl = "https://res.cloudinary.com/dfwmtpwxf/image/upload/v1690801460/alexey-savchenko-k4Akpt5-Sfk-unsplash_1_pkkbqm.jpg";
+                var imageUrl = "https://res.cloudinary.com/dfwmtpwxf/image/upload/v1690801460/alexey-savchenko-k4Akpt5-Sfk-unsplash_1_pkkbqm.jpg";
+                imageUrls.Add(imageUrl);
             }
+
             var currentUserName = await _userService.GetCurrentUserNameAsync(currentUserId);
+
+            string indexImageUrl = imageUrls.FirstOrDefault(); // Az első kép URL-je lesz az indexkép
 
             Article article = new Article()
             {
@@ -55,17 +57,24 @@ namespace Backend.Services
                 Title = createArticleDto.Title,
                 Text = createArticleDto.Text,
                 Category = createArticleDto.Category,
-                Description = createArticleDto.Description,
-                ImageUrl = imageUrl,              
+                Description = createArticleDto.Description,             
                 Country = createArticleDto.Country,
                 CreatedAt = DateTime.UtcNow,
                 UserId = currentUserId,
-
             };
+
+            article.ArticleImages.Insert(0, new ArticleImage { ImageUrl = indexImageUrl }); // Indexkép hozzáadása az első helyre
+
+            foreach (var imageUrl in imageUrls.Skip(1)) // Az első kép már hozzá lett adva, így a többit feldolgozom
+            {
+                article.ArticleImages.Add(new ArticleImage { ImageUrl = imageUrl });
+            }
+
             await _articleRepository.SaveArticleAsync(article);
 
             return article;
         }
+
         public async Task<List<ArticleDetailsDto>> GetMyArticlesAsync(string myId)
         {
             List<Article> articles = await _articleRepository.GetMyArticlesAsync(myId);
@@ -80,7 +89,7 @@ namespace Backend.Services
                 Text = article.Text,
                 Category = article.Category,
                 Description = article.Description,
-                ImageUrl = article.ImageUrl,            
+                           
                 Country = article.Country,
                 CreatedAt = article.CreatedAt.ToString(),
                 LastModified = article.LastModified.ToString(),
@@ -109,7 +118,7 @@ namespace Backend.Services
                 Text = article.Text,
                 Category = article.Category,
                 Description = article.Description,
-                ImageUrl = article.ImageUrl,                
+                              
                 Country = article.Country,
                 CreatedAt = article.CreatedAt.ToString(),
                 LastModified = article.LastModified.ToString(),
@@ -141,7 +150,7 @@ namespace Backend.Services
                 ArticleId = article.ArticleId,
                 Title = article.Title,
                 Description = article.Description,
-                ImageUrl = article.ImageUrl,
+               
             })
             .ToList();
         }
@@ -157,7 +166,7 @@ namespace Backend.Services
                 ArticleId = article.ArticleId,
                 Title = article.Title,
                 Description = article.Description,
-                ImageUrl = article.ImageUrl,
+                
             })
             .ToList();
         }
@@ -183,7 +192,7 @@ namespace Backend.Services
             }
             else
             {
-                imageUrl = article.ImageUrl;
+                
             }
 
 
@@ -201,7 +210,7 @@ namespace Backend.Services
             article.Text = updateArticleDto.Text;
             article.Category = updateArticleDto.Category;
             article.Description = updateArticleDto.Description;
-            article.ImageUrl = imageUrl;
+           
             article.Country = updateArticleDto.Country;
             article.LastModified = DateTime.UtcNow;
 
